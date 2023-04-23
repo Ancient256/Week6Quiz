@@ -1,6 +1,6 @@
 var player;
 var enemy;
-var key;
+var cursors;
 var shoot;
 var score = 0;
 var scoreText;
@@ -39,18 +39,20 @@ create ()
 {
 
     
-   
+  
     bulletSound = this.sound.add('blast');
+
     gameBGM = this.sound.add('music');
     gameBGM.loop = true;
     gameBGM.play();
+
     enemyHitSFX = this.sound.add('boom');
 
-   
+  
     this.add.image(400, 300, 'bg');
 
     
-    
+  
     player = this.physics.add.sprite(400, 680, 'ship');
     player.setCollideWorldBounds(true);
     player.setGravity(0,0);
@@ -58,21 +60,21 @@ create ()
     this.anims.create({
         key: 'stable',
         frames: [ { key: 'ship', frame: 0 } ],
-        frameRate: 30,
+        frameRate: 10,
         repeat: -1
     });
-    
- 
-    key = this.input.keyboard.createCursorKeys();
-    space = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+  
+    cursors = this.input.keyboard.createCursorKeys();
+    spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
 
+    scoreText = this.add.text(30, 50, 'Score: 0', { fontSize: '32px', fill: '#fff' }); 
     
-    scoreText = this.add.text(30, 50, 'Score: 0', { fontSize: '16px', fill: '#fff' });
-    playerTimeText = this.add.text(550, 50, 'Time: 0:00', { fontSize: '16px', fill: '#fff' }); 
+    
+    playerTimeText = this.add.text(550, 50, 'Time: 0:00', { fontSize: '32px', fill: '#fff' }); 
 
     
-   
+  
     bullets = this.physics.add.group({
         defaultKey: {key: 'bullet'},
         maxSize: 2000,
@@ -80,18 +82,16 @@ create ()
         worldBounds: true
       
       });
-    
-      
+   
       enemy = this.physics.add.group({
         defaultKey: {key: 'host'},
-        maxSize: 1000,
+        maxSize: 2000,
         allowGravity: true,
         runChildUpdate: true,
         worldBounds: true,
         debug: true  
     });
 
-    
     enemy.createMultiple({
         key: 'host',
         repeat: 5,
@@ -104,10 +104,10 @@ create ()
     })
 
     enemy.children.iterate(function(child) {
-        child.setVelocity(Phaser.Math.Between(-200, 200), Phaser.Math.Between(200, 400)).setScale(0.4);;
+        child.setVelocity(Phaser.Math.Between(-200, 200), Phaser.Math.Between(200, 400)).setScale(0.5);;
     });
 
-    
+   
     this.physics.add.overlap(bullets, enemy, onHit, null, this);
     this.physics.add.overlap(player, enemy, collideEnemyAndBullet, null, this);
     this.physics.add.overlap(player, bullets, collideEnemyAndBullet, null, this);
@@ -117,12 +117,12 @@ create ()
 
 update ()
 {
-    if (key.left.isDown)
+    if (cursors.left.isDown)
     {
         player.setVelocityX(-320);
         
     }
-    else if (key.right.isDown)
+    else if (cursors.right.isDown)
     {
         player.setVelocityX(320);
     }
@@ -145,4 +145,3 @@ update ()
 });
 }
 }
-
